@@ -5,8 +5,6 @@
   vars:
     bucket_name: "ansible-s3-bucket"
     encryption_type: "AES256"
-    s3_acl: "public-read"
-    bucket_region: "eu-central-1"
 
   tasks:
     - name: Configure AWS CLI
