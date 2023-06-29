@@ -1,0 +1,38 @@
+---
+- name: Create S3 Bucket
+  hosts: localhost
+  gather_facts: true
+  vars:
+    bucket_name: "ansible-s3-bucket"
+    encryption_type: "AES256"
+    s3_acl: "public-read"
+    bucket_region: "eu-central-1"
+
+  tasks:
+    - name: Configure AWS CLI
+      set_fact:
+        aws_access_key: "test"
+        aws_secret_key: "test"
+        aws_region: "eu-central-1"
+    
+    - name: Create bucket with JSON policy
+      amazon.aws.s3_bucket:
+        name: "{{ bucket_name }}"
+        state: present
+        encryption: "{{ encryption_type }}"
+        endpoint_url: "http://localhost:4566"
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+      register: created_bucket
+
+    - name: Retrieve a list of objects in S3 bucket
+      community.aws.s3_bucket_info:
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        endpoint_url: http://localhost:4566
+      register: list_buckets
+
+    - name: print all values returned
+      debug:
+        msg: "{{ list_buckets }}"
+...
